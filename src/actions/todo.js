@@ -4,6 +4,10 @@ const indexTodoList = () => ({
   type: types.QUERY_TODOS_LIST
 });
 
+const queryPending = () => ({
+  type: types.PROMISE_PENDING
+})
+
 const queryResolved = res => ({
   type: types.TODO_QUERY_RESOLVED,
   res 
@@ -14,7 +18,8 @@ const queryRejected = err => ({
 })
 
 export const getAllTodos = () => (dispatch, getState) => {
-  fetch('/api/todo')
+  dispatch(queryPending());
+  fetch('https://azuretodotests.azurewebsites.net/api/todo')
   .then( res => res.json() )
   .then(jsonArr => {
     dispatch(queryResolved(jsonArr))
