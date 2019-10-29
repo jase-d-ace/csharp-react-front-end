@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { searchPokemon, buildQuery } from './actions/pokemon';
 import { getAllTodos } from './actions/todo';
+import { buildName, searchYourName } from './actions/age';
 
-function App({promisePending, todoQueryResult, searchPokemon, buildQuery, getAllTodos, err, queryResult}) {
+function App({promisePending, todoQueryResult, searchPokemon, buildQuery, getAllTodos, err, queryResult, buildName, searchYourName, nameFound, nameRes}) {
   return (
     <div className="App">
       <header className="App-header">
@@ -22,6 +23,11 @@ function App({promisePending, todoQueryResult, searchPokemon, buildQuery, getAll
         <div className="todo-container">
           {promisePending ? (<h1>Loading Results</h1>) : todoQueryResult ? (todoQueryResult.map(e => (<div>{e.text}</div>))) : ""}
         </div>
+        <form onSubmit={(e) => services.submit(e, searchYourName)}>
+          <input onChange={(e) => services.inputChange(e.target.value, buildName)} type="text" name="name" placeholder="write your name" />
+          <input type="submit" value="we'll guess your age" />
+        </form>
+        {nameFound ? (<div>Based on your name, and the fact that {nameRes.count} have your name, we think you are {nameRes.age} years old, {nameRes.name}</div>) : ""}
       </header>
     </div>
   );
@@ -32,7 +38,10 @@ const mapStateToProps = (state) => ({
   queryResult: state.pokemon.queryResult,
   err: state.pokemon.err,
   todoQueryResult: state.todo.todoQueryResult,
-  todoErr: state.todo.todoErr
+  todoErr: state.todo.todoErr,
+  nameSearch: state.name.nameSearch,
+  nameFound: state.name.nameFound,
+  nameRes: state.name.nameRes
 });
 
 App.propTypes = {
@@ -55,4 +64,4 @@ App.propTypes = {
   promisePending: PropTypes.bool
 };
 
-export default connect(mapStateToProps, { searchPokemon, buildQuery, getAllTodos })(App);
+export default connect(mapStateToProps, { searchPokemon, buildQuery, getAllTodos, buildName, searchYourName })(App);
